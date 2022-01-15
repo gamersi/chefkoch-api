@@ -54,3 +54,16 @@ chefkoch.chefkochAPI.getRecipe('rezepte/1127371219159420/Dinkel-Hirse-Vollkornbr
     console.log(data);
 });
 ```
+### write to a Json
+```
+const chefkoch = require("chefkoch-api");
+async function init() {
+    await chefkoch.chefkochAPI.searchRecipes("raclette").then(function(data) {
+        data.forEach((entry) => {
+            entry.name = entry.name.split("\n")[1].split("      ")[1]
+        })
+        new chefkoch.DataParser().writeRecipesToJson(data, "raclette.json")
+    })
+}
+init()
+```
