@@ -1,0 +1,25 @@
+{
+  "name": "chefkoch-api",
+  "version": "1.0.1",
+  "description": "JavaScript API for the chefkoch.de recipe website",
+  "main": "index.js",
+  "scripts": {
+    "generateTypings": "del index.d.ts index.d.ts.map && tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "types": "index.d.ts",
+  "keywords": [
+    "chefkoch",
+    "recipe",
+    "api",
+    "javascript",
+    "chefkoch.de"
+  ],
+  "author": "gamersi",
+  "license": "ISC",
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "jssoup": "^0.0.15",
+    "node-fetch": "^3.1.0"
+  }
+}
