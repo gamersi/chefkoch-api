@@ -1,6 +1,6 @@
 # Chefkoch API Documentation
 Welcome to the new Chefkoch API documentation.
-if you are from chefkoch.de and want me to take the packeage down, please contact me on github.
+if you are from chefkoch.de and want me to take the package down, please contact me on github.
 ## Introduction
 The Chefkoch API is a API Wrapper that allows you to access the data of the chefkoch.de website.
 
@@ -37,9 +37,11 @@ chefkoch.chefkochAPI.getCategories().then(function(data){
 ```
 ### Get the recipes of a category
 ```
-let category = chefkoch.getCategories()[0];
-chefkoch.chefkochAPI.getRecipes(category, 5/*these are the amount of pages to scrape, this is optional*/, 0/*this is the Start page*/).then(function(data){
-    console.log(data);
+chefkoch.chefkochAPI.getCategories().then(function(data){
+    let category = data[0];
+    chefkoch.chefkochAPI.getRecipes(category, 5/*these are the amount of pages to scrape, this is optional*/, 0/*this is the Start page*/).then(function(data){
+        console.log(data);
+    });
 });
 ```
 ### Search for recipes
@@ -50,7 +52,7 @@ chefkoch.chefkochAPI.searchRecipes('pizza', 5/*these are the amount of pages to 
 ```
 ### Get a recipe
 ```
-chefkoch.chefkochAPI.getRecipe('rezepte/1127371219159420/Dinkel-Hirse-Vollkornbrot.html'/*this is the subURL of the recipe*/).then(function(data){
+chefkoch.chefkochAPI.getRecipe('/rezepte/1127371219159420/Dinkel-Hirse-Vollkornbrot.html'/*this is the subURL of the recipe*/).then(function(data){
     console.log(data);
 });
 ```
