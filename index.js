@@ -72,11 +72,11 @@ class Recipe {
 class ChefkochAPI {
     
     constructor() {
-        this.baseURL = "https://www.chefkoch.de/";
+        this.baseURL = "https://www.chefkoch.de";
     }
 
     async getCategories() {
-        const response = await fetch(this.baseURL + "rezepte/kategorien/");
+        const response = await fetch(this.baseURL + "/rezepte/kategorien/");
         const html = await response.text();
         const soup = new JSSoup(html);
         let categories = [];
@@ -132,7 +132,7 @@ class ChefkochAPI {
         let index = startIndex;
         let recipes = [];
         while(index <= endIndex) {
-            const response = await fetch(`${this.baseURL}rs/s${index}/${query}/Rezepte.html`);
+            const response = await fetch(`${this.baseURL}/rs/s${index}/${query}/Rezepte.html`);
             const html = await response.text();
             const soup = new JSSoup(html);
             soup.findAll("div", {"class": "ds-recipe-card"}).forEach(recipe_card => {
