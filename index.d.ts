@@ -1,35 +1,35 @@
 export var chefkochAPI: ChefkochAPI;
 export class DataParser {
-    writeFile(fileName: any, data: any): Promise<void>;
-    readFile(fileName: any): Promise<any>;
-    writeRecipesToJson(recipes: any, fileName: any): Promise<void>;
-    writeCategoriesToJson(categories: any, fileName: any): Promise<void>;
-    writeRecipesToCSV(recipes: any, fileName: any): Promise<void>;
-    writeCategoriesToCSV(categories: any, fileName: any): Promise<void>;
-    loadRecipesFromJson(fileName: any): Promise<any>;
-    loadCategoriesFromJson(fileName: any): Promise<any>;
-    loadRecipesFromCSV(fileName: any): Promise<Recipe[]>;
-    loadCategoriesFromCSV(fileName: any): Promise<Category[]>;
+    writeFile(fileName: String, data: any): Promise<void>;
+    readFile(fileName: String): Promise<any>;
+    writeRecipesToJson(recipes: any, fileName: String): Promise<void>;
+    writeCategoriesToJson(categories: any, fileName: String): Promise<void>;
+    writeRecipesToCSV(recipes: any, fileName: String): Promise<void>;
+    writeCategoriesToCSV(categories: any, fileName: String): Promise<void>;
+    loadRecipesFromJson(fileName: String): Promise<any[]>;
+    loadCategoriesFromJson(fileName: String): Promise<any[]>;
+    loadRecipesFromCSV(fileName: String): Promise<any[]>;
+    loadCategoriesFromCSV(fileName: String): Promise<any[]>;
 }
 export class Recipe {
-    constructor(name: any, url: any, ingredients: any, category: any);
-    name: any;
-    url: any;
-    ingredients: any;
-    category: any;
-    getName(): any;
-    getUrl(): any;
-    getIngredients(): any;
-    getCategory(): any;
-    toString(): any;
+    constructor(name: String, url: String, ingredients: Ingredient[], category: String);
+    name: String;
+    url: String;
+    ingredients: Ingredient[];
+    category: String;
+    getName(): String;
+    getUrl(): String;
+    getIngredients(): Ingredient[];
+    getCategory(): String;
+    toString(): String;
 }
 export class Category {
-    constructor(name: any, url: any);
-    name: any;
-    url: any;
-    getName(): any;
-    getUrl(): any;
-    toString(): any;
+    constructor(name: String, url: String);
+    name: String;
+    url: String;
+    getName(): String;
+    getUrl(): String;
+    toString(): String;
 }
 export class Ingredient {
     constructor(name: String, amount: String);
