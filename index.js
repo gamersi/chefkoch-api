@@ -205,7 +205,7 @@ class ChefkochAPI {
                     ingredient_list.push(new Ingredient("No ingredients found", "none"));
                 }
                 let category = null;
-                let categoryURL = soup.find("ol", {"class": "ds-col-12"});
+                let categoryURL = soup2.find("ol", {"class": "ds-col-12"});
                 if(categoryURL != null) {
                     // 4th element is the category
                     categoryURL = categoryURL.findAll("li")[3].find("a").attrs.href;
