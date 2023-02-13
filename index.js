@@ -97,20 +97,43 @@ class ChefkochAPI {
             const response = await fetch(this.baseURL + category.url);
             const html = await response.text();
             const soup = new JSSoup(html);
-            soup.findAll("div", {"class": "ds-recipe-card"}).forEach(recipe_card => {
-                let recipeName = recipe_card.find("h2").text;
-                let recipeURL = recipe_card.find("a").attrs.href;
+            soup.findAll("div", {"class": "ds-recipe-card"}).forEach(async recipe_card => {
+                let recipeName = this.beautifyText(recipe_card.find("h3").text);
+                let recipeURL = recipe_card.find("a").attrs.href.split("#")[0];
                 let ingredient_list = [];
-                const soup2 = new JSSoup(`${this.baseURL}${recipeURL}`);
-                const ingredientTable = soup2.find("table", {"class": "ingredients"});
+                const response2 = await fetch(recipeURL);
+                const html2 = await response2.text();
+                const soup2 = new JSSoup(html2);
+                let ingredientTable = soup2.find("table", {"class": "ingredients"});
                 if(ingredientTable != null) {
+                    ingredientTable = ingredientTable.find("tbody");
                     ingredientTable.findAll("tr").forEach(ingredient_row => {
-                        let ingredient_name = ingredient_row.find("td", {"class": "td-right"}).text;
-                        let ingredient_amount = ingredient_row.find("td", {"class": "td-left"}).text;
+                        let ingredient_name = ingredient_row.find("td", {"class": "td-right"}).find("span");
+                        if(ingredient_name != null) {
+                            if(ingredient_name.find("a") != null) {
+                                ingredient_name = this.beautifyText(ingredient_name.find("a").text);
+                            } else {
+                                ingredient_name = this.beautifyText(ingredient_name.text);
+                            }
+                        } else {
+                            ingredient_name = "No ingredient name found";
+                        }
+                        let ingredient_amount = ingredient_row.find("td", {"class": "td-left"}).find("span");
+                        if(ingredient_amount != null) {
+                            if(ingredient_amount.find("a") != null) {
+                                ingredient_amount = this.beautifyText(ingredient_amount.find("a").text);
+                            } else {
+                                ingredient_amount = this.beautifyText(ingredient_amount.text);
+                            }
+                        } else {
+                            ingredient_amount = "No ingredient amount found";
+                        }
                         ingredient_list.push(new Ingredient(ingredient_name, ingredient_amount));
                     });
+                } else {
+                    ingredient_list.push(new Ingredient("No ingredients found", "none"));
                 }
-                let recipe = new Recipe(recipeName, recipeURL, ingredient_list, category.name);
+                let recipe = new Recipe(recipeName, recipeURL, ingredient_list, category);
                 recipes.push(recipe);
             });
             index++;
@@ -118,12 +141,22 @@ class ChefkochAPI {
         return recipes;
     }
 
+    beautifyText(text) {
+        // remove newlines and tabs
+        text = text.replace(/(\r\n|\n|\r|\t)/gm, "");
+        // remove multiple whitespaces
+        text = text.replace(/\s\s+/g, ' ');
+        // remove whitespaces at the beginning and end of the string
+        text = text.trim();
+        return text;
+    }
+
     async getAllRecipes(endIndex = 5, startIndex = 0) {
         let recipes = [];
         let categories = await this.getCategories();
         for(let category of categories) {
             let category_recipes = await this.getRecipes(category, endIndex, startIndex);
-            recipes.push(recipes.concat(category_recipes));
+            recipes.push(...category_recipes);
         }
         return recipes;
     }
@@ -135,20 +168,43 @@ class ChefkochAPI {
             const response = await fetch(`${this.baseURL}/rs/s${index}/${query}/Rezepte.html`);
             const html = await response.text();
             const soup = new JSSoup(html);
-            soup.findAll("div", {"class": "ds-recipe-card"}).forEach(recipe_card => {
-                let recipeName = recipe_card.find("h2").text;
-                let recipeURL = recipe_card.find("a").attrs.href;
+            soup.findAll("div", {"class": "ds-recipe-card"}).forEach(async recipe_card => {
+                let recipeName = this.beautifyText(recipe_card.find("h3").text);
+                let recipeURL = recipe_card.find("a").attrs.href.split("#")[0];
                 let ingredient_list = [];
-                const soup2 = new JSSoup(`${this.baseURL}${recipeURL}`);
-                const ingredientTable = soup2.find("table", {"class": "ingredients"});
+                const response2 = await fetch(recipeURL);
+                const html2 = await response2.text();
+                const soup2 = new JSSoup(html2);
+                let ingredientTable = soup2.find("table", {"class": "ingredients"});
                 if(ingredientTable != null) {
+                    ingredientTable = ingredientTable.find("tbody");
                     ingredientTable.findAll("tr").forEach(ingredient_row => {
-                        let ingredient_name = ingredient_row.find("td", {"class": "td-right"}).text;
-                        let ingredient_amount = ingredient_row.find("td", {"class": "td-left"}).text;
+                        let ingredient_name = ingredient_row.find("td", {"class": "td-right"}).find("span");
+                        if(ingredient_name != null) {
+                            if(ingredient_name.find("a") != null) {
+                                ingredient_name = this.beautifyText(ingredient_name.find("a").text);
+                            } else {
+                                ingredient_name = this.beautifyText(ingredient_name.text);
+                            }
+                        } else {
+                            ingredient_name = "No ingredient name found";
+                        }
+                        let ingredient_amount = ingredient_row.find("td", {"class": "td-left"}).find("span");
+                        if(ingredient_amount != null) {
+                            if(ingredient_amount.find("a") != null) {
+                                ingredient_amount = this.beautifyText(ingredient_amount.find("a").text);
+                            } else {
+                                ingredient_amount = this.beautifyText(ingredient_amount.text);
+                            }
+                        } else {
+                            ingredient_amount = "No ingredient amount found";
+                        }
                         ingredient_list.push(new Ingredient(ingredient_name, ingredient_amount));
                     });
+                } else {
+                    ingredient_list.push(new Ingredient("No ingredients found", "none"));
                 }
-                let recipe = new Recipe(recipeName, recipeURL, ingredient_list);
+                let recipe = new Recipe(recipeName, recipeURL, ingredient_list, category);
                 recipes.push(recipe);
             });
             index++;
@@ -166,17 +222,35 @@ class ChefkochAPI {
         const ingredientTable = soup.find("table", {"class": "ingredients"});
         if(ingredientTable != null) {
             ingredientTable.findAll("tr").forEach(ingredient_row => {
-                let ingredient_name = ingredient_row.find("td", {"class": "td-right"}).text;
-                let ingredient_amount = ingredient_row.find("td", {"class": "td-left"}).text;
+                let ingredient_name = this.beautifyText(ingredient_row.find("td", {"class": "td-right"}).text);
+                let ingredient_amount = this.beautifyText(ingredient_row.find("td", {"class": "td-left"}).text);
                 ingredient_list.push(new Ingredient(ingredient_name, ingredient_amount));
             });
         }
-        let recipe = new Recipe(recipeName, recipeSubURL, ingredient_list);
+        let category = null;
+        let categoryURL = soup.find("ol", {"class": "ds-col-12"});
+        if(categoryURL != null) {
+            // 4th element is the category
+            categoryURL = categoryURL.findAll("li")[3].find("a").attrs.href;
+            category = await this.getCategory(categoryURL);
+        }
+
+        let recipe = new Recipe(recipeName, recipeSubURL, ingredient_list, category);
         return recipe;
+    }
+
+    async getCategory(categorySubURL) {
+        const response = await fetch(this.baseURL + categorySubURL);
+        const html = await response.text();
+        const soup = new JSSoup(html);
+        let categoryName = this.beautifyText(soup.find("h1").text).split(" Rezepte")[0];
+        let category = new Category(categoryName, categorySubURL);
+        return category;
     }
 }
 
 class DataParser {
+
     async writeFile(fileName, data) {
         fs.writeFile(fileName, data, (err) => {
             if (err) throw err;

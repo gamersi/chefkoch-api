@@ -1,6 +1,6 @@
 {
   "name": "chefkoch-api",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "description": "JavaScript API for the chefkoch.de recipe website",
   "main": "index.js",
   "repository": {
@@ -8,8 +8,7 @@
     "url": "https://github.com/gamersi/chefkoch-api"
   },
   "scripts": {
-    "generateTypings": "del index.d.ts index.d.ts.map && tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "generateTypings": "del index.d.ts index.d.ts.map && tsc"
   },
   "types": "index.d.ts",
   "keywords": [

@@ -2,25 +2,25 @@ export var chefkochAPI: ChefkochAPI;
 export class DataParser {
     writeFile(fileName: String, data: any): Promise<void>;
     readFile(fileName: String): Promise<any>;
-    writeRecipesToJson(recipes: any, fileName: String): Promise<void>;
-    writeCategoriesToJson(categories: any, fileName: String): Promise<void>;
-    writeRecipesToCSV(recipes: any, fileName: String): Promise<void>;
-    writeCategoriesToCSV(categories: any, fileName: String): Promise<void>;
-    loadRecipesFromJson(fileName: String): Promise<any[]>;
-    loadCategoriesFromJson(fileName: String): Promise<any[]>;
-    loadRecipesFromCSV(fileName: String): Promise<any[]>;
-    loadCategoriesFromCSV(fileName: String): Promise<any[]>;
+    writeRecipesToJson(recipes: Recipe[], fileName: String): Promise<void>;
+    writeCategoriesToJson(categories: Category[], fileName: String): Promise<void>;
+    writeRecipesToCSV(recipes: Recipe[], fileName: String): Promise<void>;
+    writeCategoriesToCSV(categories: Category[], fileName: String): Promise<void>;
+    loadRecipesFromJson(fileName: String): Promise<any>;
+    loadCategoriesFromJson(fileName: String): Promise<any>;
+    loadRecipesFromCSV(fileName: String): Promise<Recipe[]>;
+    loadCategoriesFromCSV(fileName: String): Promise<Category[]>;
 }
 export class Recipe {
-    constructor(name: String, url: String, ingredients: Ingredient[], category: String);
+    constructor(name: String, url: String, ingredients: Ingredient[], category: Category);
     name: String;
     url: String;
     ingredients: Ingredient[];
-    category: String;
+    category: Category;
     getName(): String;
     getUrl(): String;
     getIngredients(): Ingredient[];
-    getCategory(): String;
+    getCategory(): Category;
     toString(): String;
 }
 export class Category {
@@ -40,11 +40,13 @@ export class Ingredient {
     toString(): String;
 }
 export class ChefkochAPI {
-    baseURL: string;
+    baseURL: String;
     getCategories(): Promise<Category[]>;
-    getRecipes(category: Category, endIndex?: number, startIndex?: number): Promise<any[]>;
-    getAllRecipes(endIndex?: number, startIndex?: number): Promise<any[][]>;
-    searchRecipes(query: String, endIndex?: number, startIndex?: number): Promise<any[]>;
+    getRecipes(category: Category, endIndex?: number, startIndex?: number): Promise<Recipe[]>;
+    beautifyText(text: String): String;
+    getAllRecipes(endIndex?: number, startIndex?: number): Promise<Recipe[]>;
+    searchRecipes(query: String, endIndex?: number, startIndex?: number): Promise<Recipe[]>;
     getRecipe(recipeSubURL: String): Promise<Recipe>;
+    getCategory(categorySubURL: String): Promise<Category>;
 }
 //# sourceMappingURL=index.d.ts.map
