@@ -204,6 +204,13 @@ class ChefkochAPI {
                 } else {
                     ingredient_list.push(new Ingredient("No ingredients found", "none"));
                 }
+                let category = null;
+                let categoryURL = soup.find("ol", {"class": "ds-col-12"});
+                if(categoryURL != null) {
+                    // 4th element is the category
+                    categoryURL = categoryURL.findAll("li")[3].find("a").attrs.href;
+                    category = await this.getCategory(categoryURL);
+                }
                 let recipe = new Recipe(recipeName, recipeURL, ingredient_list, category);
                 recipes.push(recipe);
             });
@@ -234,7 +241,6 @@ class ChefkochAPI {
             categoryURL = categoryURL.findAll("li")[3].find("a").attrs.href;
             category = await this.getCategory(categoryURL);
         }
-
         let recipe = new Recipe(recipeName, recipeSubURL, ingredient_list, category);
         return recipe;
     }
