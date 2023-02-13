@@ -40,12 +40,32 @@ class Ingredient {
     }
 }
 
+class Tag {
+    constructor(name, url) {
+        this.name = name;
+        this.url = url;
+    }
+
+    getName() {
+        return this.name;
+    }
+
+    getUrl() {
+        return this.url;
+    }
+
+    toString() {
+        return this.name;
+    }
+}
+
 class Recipe {
-    constructor(name, url, ingredients, category) {
+    constructor(name, url, ingredients, category, tags = []) {
         this.name = name;
         this.url = url;
         this.ingredients = ingredients;
         this.category = category;
+        this.tags = tags;
     }
 
     getName() {
@@ -62,6 +82,10 @@ class Recipe {
 
     getCategory() {
         return this.category;
+    }
+
+    getTags() {
+        return this.tags;
     }
 
     toString() {
@@ -92,6 +116,7 @@ class ChefkochAPI {
     async getRecipes(category, endIndex = 5, startIndex = 0) {
         let index = startIndex;
         let recipes = [];
+        let tags = [];
         while(index <= endIndex) {
             category.url = category.url.replace("/s0/", `/s${index}/`);
             const response = await fetch(this.baseURL + category.url);
@@ -133,8 +158,17 @@ class ChefkochAPI {
                 } else {
                     ingredient_list.push(new Ingredient("No ingredients found", "none"));
                 }
-                let recipe = new Recipe(recipeName, recipeURL, ingredient_list, category);
+                let tagElement = soup2.find("div", {"class": "recipe-tags"});
+                if(tagElement != null) {
+                    tagElement.findAll("a").forEach(tagElement => {
+                        tags.push(new Tag(tagElement.text, tagElement.attrs.href));
+                    });
+                } else {
+                    tags.push(new Tag("No tags found", "none"));
+                }
+                let recipe = new Recipe(recipeName, recipeURL, ingredient_list, category, tags);
                 recipes.push(recipe);
+                tags = [];
             });
             index++;
         }
@@ -164,6 +198,7 @@ class ChefkochAPI {
     async searchRecipes(query, endIndex = 5, startIndex = 0) {
         let index = startIndex;
         let recipes = [];
+        let tags = [];
         while(index <= endIndex) {
             const response = await fetch(`${this.baseURL}/rs/s${index}/${query}/Rezepte.html`);
             const html = await response.text();
@@ -211,8 +246,17 @@ class ChefkochAPI {
                     categoryURL = categoryURL.findAll("li")[3].find("a").attrs.href;
                     category = await this.getCategory(categoryURL);
                 }
-                let recipe = new Recipe(recipeName, recipeURL, ingredient_list, category);
+                let tagElement = soup2.find("div", {"class": "recipe-tags"});
+                if(tagElement != null) {
+                    tagElement.findAll("a").forEach(tagElement => {
+                        tags.push(new Tag(tagElement.text, tagElement.attrs.href));
+                    });
+                } else {
+                    tags.push(new Tag("No tags found", "none"));
+                }
+                let recipe = new Recipe(recipeName, recipeURL, ingredient_list, category, tags);
                 recipes.push(recipe);
+                tags = [];
             });
             index++;
         }
@@ -225,6 +269,7 @@ class ChefkochAPI {
         const html = await response.text();
         const soup = new JSSoup(html);
         let recipeName = soup.find("h1").text;
+        let tags = [];
         let ingredient_list = [];
         const ingredientTable = soup.find("table", {"class": "ingredients"});
         if(ingredientTable != null) {
@@ -241,7 +286,15 @@ class ChefkochAPI {
             categoryURL = categoryURL.findAll("li")[3].find("a").attrs.href;
             category = await this.getCategory(categoryURL);
         }
-        let recipe = new Recipe(recipeName, recipeSubURL, ingredient_list, category);
+        let tagElement = soup.find("div", {"class": "recipe-tags"});
+        if(tagElement != null) {
+            tagElement.findAll("a").forEach(tagElement => {
+                tags.push(new Tag(tagElement.text, tagElement.attrs.href));
+            });
+        } else {
+            tags.push(new Tag("No tags found", "none"));
+        }
+        let recipe = new Recipe(recipeName, recipeSubURL, ingredient_list, category, tags);
         return recipe;
     }
 
@@ -340,6 +393,7 @@ var chefkochAPI = new ChefkochAPI();
 
 module.exports.chefkochAPI = chefkochAPI;
 module.exports.DataParser = DataParser;
+module.exports.Tag = Tag;
 module.exports.Recipe = Recipe;
 module.exports.Category = Category;
 module.exports.Ingredient = Ingredient;

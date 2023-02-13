@@ -11,16 +11,26 @@ export class DataParser {
     loadRecipesFromCSV(fileName: String): Promise<Recipe[]>;
     loadCategoriesFromCSV(fileName: String): Promise<Category[]>;
 }
+export class Tag {
+    constructor(name: String, url: String);
+    name: String;
+    url: String;
+    getName(): String;
+    getUrl(): String;
+    toString(): String;
+}
 export class Recipe {
-    constructor(name: String, url: String, ingredients: Ingredient[], category: Category);
+    constructor(name: String, url: String, ingredients: Ingredient[], category: Category, tags?: Tag[]);
     name: String;
     url: String;
     ingredients: Ingredient[];
     category: Category;
+    tags: Tag[];
     getName(): String;
     getUrl(): String;
     getIngredients(): Ingredient[];
     getCategory(): Category;
+    getTags(): Tag[];
     toString(): String;
 }
 export class Category {
