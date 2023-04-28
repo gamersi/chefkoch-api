@@ -73,3 +73,7 @@ async function init() {
 }
 init()
 ```
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=gamersi/chefkoch-api&type=Date)](https://star-history.com/#gamersi/chefkoch-api&Date)
