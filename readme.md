@@ -20,7 +20,7 @@ const chefkoch = require('chefkoch-api');
 Since the API is based on webscraping, it is very slow.
 If you want to get all the recipes, it will take a very, very long time.
 It will go through n(default=5) pages of the website and scrape all the ingredients of every single recipe.
-Currently it **just supports ingredients** because of performance issues and the fact that I don't need the other data for my project.
+The API now supports fetching recipe descriptions along with ingredients, making the data more comprehensive but potentially slower.
 
 ## Technical Details
 The API is based on webscraping.
@@ -28,6 +28,7 @@ Every function returns a class that contains the data of the website.
 There is a DataParser Class where you can store data in a JSON or CSV file and read it again later.
 Pay attention that you use the "chefkochAPI" instance instead of the "ChefkochAPI" class!
 Since version 1.2.0 the API has a builtin beautifier that removes, newlines, tabs, multiple spaces, trailing spaces and leading spaces.
+The API now includes recipe descriptions and has improved error handling and code robustness.
 ## Examples
 ### Get all recipes
 WARNING: THIS IS VERY SLOW!
@@ -61,6 +62,7 @@ chefkoch.chefkochAPI.searchRecipes('pizza', 5/*these are the amount of pages to 
 ```
 chefkoch.chefkochAPI.getRecipe('/rezepte/1127371219159420/Dinkel-Hirse-Vollkornbrot.html'/*this is the subURL of the recipe*/).then(function(data){
     console.log(data);
+    console.log('Recipe description:', data.getDescription());
 });
 ```
 ### write to a Json
